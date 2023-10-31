@@ -34,7 +34,8 @@ for n,r in enumerate(radii):
     if n == 0:
         vmin = CovR.min(); vmax = CovR.max()
     im1 = ax[0,n].imshow(Mu,cmap='coolwarm')
-    ax[0,n].set_xlabel('pixels'); ax[0,n].set_ylabel('pixels')
+    #ax[0,n].set_xlabel('pixels'); ax[0,n].set_ylabel('pixels')
+    ax[0,n].set_xticks([]); ax[0,n].set_yticks([])
     cbar1 = plt.colorbar(im1,ax=ax[0,n],fraction=0.046, pad=0.04)
     cbar1.set_label(r'$\langle X_{i}\rangle/\eta N_{0}\Delta t$')
     im2 = ax[1,n].imshow(CovR,cmap='coolwarm',vmin=vmin,vmax=vmax)
@@ -44,6 +45,7 @@ for n,r in enumerate(radii):
     formatter.set_powerlimits((0, 0))  # Display only powers of 10, e.g., 10^0, 10^-1
     cbar1.formatter = formatter; cbar2.formatter = formatter
     cbar1.update_ticks(); cbar2.update_ticks()
-    ax[1,n].set_xlabel('pixels'); ax[1,n].set_ylabel('pixels')
+    #ax[1,n].set_xlabel('pixels'); ax[1,n].set_ylabel('pixels')
+    ax[1,n].set_xticks([]); ax[1,n].set_yticks([])
 plt.tight_layout()
 plt.show()
