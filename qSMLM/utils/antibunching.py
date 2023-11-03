@@ -4,6 +4,9 @@ import itertools
 from qSMLM.psf.psf2d.psf2d import *
 from scipy.special import comb
 
+def computeCov(stack):
+    pass
+
 def computeP(theta,npixels,patch_hw=5):
 
     x = np.arange(0,2*patch_hw); y = np.arange(0,2*patch_hw)
