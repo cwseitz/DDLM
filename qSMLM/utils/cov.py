@@ -1,11 +1,41 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
-from qSMLM.psf.psf2d.psf2d import *
 from scipy.special import comb
+from ..psf.psf2d import *
 
 def computeCov(stack):
-    pass
+
+    nt,nx,ny = stack.shape
+    stack = stack.reshape((nt,nx*ny))
+    Ei = np.mean(stack,axis=0)
+    Ei = np.outer(Ei,Ei)
+    stack = stack[:,:,np.newaxis]
+    F = stack*stack.transpose(0,2,1)
+    E = np.mean(F,axis=0)
+    
+    npixels = nx
+    Vind, RLind, Hind, Dind = computeSind(npixels)
+    Eh,Ev,Er,El,Ed = computeEind(npixels)
+    
+    Ehvals = E[Eh]; Evvals = E[Ev]; Ervals = E[Er]
+    Elvals = E[El]; Edvals = E[Ed]
+
+    CovR = np.zeros((2*npixels-1,2*npixels-1))
+    CovR[Vind] = Evvals; CovR[RLind] = Ervals
+    CovR[Hind] = Ehvals
+    #CovR[Dind] = Edvals
+
+    Ehvals = Ei[Eh]; Evvals = Ei[Ev]; Ervals = Ei[Er]
+    Elvals = Ei[El]; Edvals = Ei[Ed]
+
+    VarR = np.zeros((2*npixels-1,2*npixels-1))
+    VarR[Vind] = Evvals; VarR[RLind] = Ervals
+    VarR[Hind] = Ehvals
+    #arR[Dind] = Edvals
+    
+    return CovR, VarR
+
 
 def computeP(theta,npixels,patch_hw=5):
 

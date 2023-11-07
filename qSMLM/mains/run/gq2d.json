@@ -1,0 +1,6 @@
+{
+"datapath": "/research2/shared/cwseitz/Data/SPAD/231105/QD655_HILO_Continuous_20mW_10k_frames_1us_1bit/Raw/",
+"analpath": "/home/cwseitz/Desktop/Test/",
+"thresh_log": 0.02,
+"patchw": 4
+}
