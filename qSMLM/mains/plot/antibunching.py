@@ -25,7 +25,7 @@ def get_theta(config,ring_radius=3):
     theta[3,:] = config['N0']
     return theta
 
-radii = [3,4,7]
+radii = [1,3,5]
 
 fig,ax=plt.subplots(2,len(radii))
 for n,r in enumerate(radii):

@@ -13,11 +13,11 @@ def computeCov(stack):
     stack = stack[:,:,np.newaxis]
     F = stack*stack.transpose(0,2,1)
     E = np.mean(F,axis=0)
-    
+
     npixels = nx
     Vind, RLind, Hind, Dind = computeSind(npixels)
     Eh,Ev,Er,El,Ed = computeEind(npixels)
-    
+
     Ehvals = E[Eh]; Evvals = E[Ev]; Ervals = E[Er]
     Elvals = E[El]; Edvals = E[Ed]
 
@@ -32,8 +32,8 @@ def computeCov(stack):
     VarR = np.zeros((2*npixels-1,2*npixels-1))
     VarR[Vind] = Evvals; VarR[RLind] = Ervals
     VarR[Hind] = Ehvals
-    #arR[Dind] = Edvals
-    
+    #VarR[Dind] = Edvals
+
     return CovR, VarR
 
 
@@ -139,10 +139,12 @@ def renderCov(theta,npixels,bpath):
 
     CovR = np.zeros((2*npixels-1,2*npixels-1))
     CovR[Vind] = Evvals; CovR[RLind] = Ervals
-    CovR[Hind] = Ehvals; CovR[Dind] = Edvals
+    CovR[Hind] = Ehvals
+    CovR[Dind] = Edvals
 
     CovL = np.zeros((2*npixels-1,2*npixels-1))
     CovL[Vind] = Evvals; CovL[RLind] = Elvals
-    CovL[Hind] = Ehvals; CovL[Dind] = Edvals
+    CovL[Hind] = Ehvals
+    CovL[Dind] = Edvals
 
     return mu, CovR, CovL
