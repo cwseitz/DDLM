@@ -10,11 +10,8 @@ def generate_binary_strings(length, num_ones):
 
 def non_overlapping_combinations_(M,N1,N2):
 
-    # Generate all possible binary strings with N1 1's and N2 1's
     binary_strings_N1 = generate_binary_strings(M, N1)
     binary_strings_N2 = generate_binary_strings(M, N2)
-
-    # Find non-overlapping combinations of the two binary strings
     non_overlapping_combinations = []
     for string1 in binary_strings_N1:
         for string2 in binary_strings_N2:
@@ -29,7 +26,7 @@ maxM = 10
 maxN1 = 3
 maxN2 = 3
 
-path = '/Users/cwseitz/Desktop/States/'
+path = '/home/cwseitz/Desktop/States/'
 
 for m in range(1,maxM):
     for n1 in range(maxN1):

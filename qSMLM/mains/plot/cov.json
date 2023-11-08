@@ -1,8 +1,7 @@
 {
-  "particles": 8,
   "npixels": 30,
   "sigma": 0.92,
   "N0": 1.0,
   "eta": 1.0,
-  "bpath":"/Users/cwseitz/Desktop/States/"
+  "bpath":"/home/cwseitz/Desktop/States/"
 }

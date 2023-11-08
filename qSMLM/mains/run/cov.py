@@ -19,13 +19,11 @@ prefixes = [
 for prefix in prefixes:
     path = config['datapath']+prefix+'.tif'
     stack = imread(path)
-    CovR,VarR = computeCov(stack)
-    X = np.nan_to_num(CovR/VarR)
-    #X = CovR/VarR
-    #X = 1/(1+np.exp(-0.1*X)) - 0.5
+    ExyR, ExEyR = computeCov(stack)
+    X = np.nan_to_num(ExyR/ExEyR)
     fig,ax=plt.subplots(1,3,sharex=True,sharey=True)
-    ax[0].imshow(CovR,cmap='coolwarm')
-    ax[1].imshow(VarR,cmap='coolwarm')
+    ax[0].imshow(ExyR,cmap='coolwarm')
+    ax[1].imshow(ExEyR,cmap='coolwarm')
     ax[2].imshow(X,cmap='coolwarm')
     ax[0].set_title(prefix)
 plt.show()
