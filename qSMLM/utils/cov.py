@@ -201,8 +201,6 @@ def Exy_em(stack):
        averages <X><Y>, no params"""
     nt,nx,ny = stack.shape
     stack = stack.reshape((nt,nx*ny))
-    Ei = np.mean(stack,axis=0)
-    Ei = np.outer(Ei,Ei)
     stack = stack[:,:,np.newaxis]
     F = stack*stack.transpose(0,2,1)
     Exy = np.mean(F,axis=0)
@@ -216,13 +214,30 @@ def Exy_em(stack):
 
     ExyR = np.zeros((2*npixels-1,2*npixels-1))
     ExyR[Vind] = Evvals; ExyR[RLind] = Ervals
-    ExyR[Hind] = Ehvals; ExyR[Dind] = Edvals
+    ExyR[Hind] = Ehvals; 
+    #ExyR[Dind] = Edvals
+
+    return ExyR
+    
+    
+def ExEy_em(stack):
+    """Wrapper to calculate empirical pixel covariance <XY> and product of
+       averages <X><Y>, no params"""
+    nt,nx,ny = stack.shape
+    stack = stack.reshape((nt,nx*ny))
+    Ei = np.mean(stack,axis=0)
+    Ei = np.outer(Ei,Ei)
+
+    npixels = nx
+    Vind, RLind, Hind, Dind = Sind(npixels)
+    Eh,Ev,Er,El,Ed = Eind(npixels)
 
     Ehvals = Ei[Eh]; Evvals = Ei[Ev]; Ervals = Ei[Er]
     Elvals = Ei[El]; Edvals = Ei[Ed]
 
     ExEyR = np.zeros((2*npixels-1,2*npixels-1))
     ExEyR[Vind] = Evvals; ExEyR[RLind] = Ervals
-    ExEyR[Hind] = Ehvals; ExEyR[Dind] = Edvals
+    ExEyR[Hind] = Ehvals; 
+    #ExEyR[Dind] = Edvals
 
-    return ExyR, ExEyR
+    return ExEyR
