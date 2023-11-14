@@ -488,11 +488,11 @@ class FactorialHMMDiscreteObserved(FactorialHMM):
 
     def GetObservedGivenHidden(self, observed_state, n_step):
         # Returns a tensor of P(x|z), per z
-        return self.obs_given_hidden[[n_step, Ellipsis] + list(observed_state)]
+        return self.obs_given_hidden[tuple([n_step, Ellipsis] + list(observed_state))]
 
     def DrawObservedGivenHidden(self, hidden_state, n_step, random_state):
         draw = lambda ps: random_state.choice(len(ps), size=None, p=ps)
-        probs = self.obs_given_hidden[[n_step] + list(hidden_state) + [Ellipsis]].ravel()
+        probs = self.obs_given_hidden[tuple([n_step] + list(hidden_state) + [Ellipsis])].ravel()
         return self.all_observed_states[draw(probs)]
 
 
@@ -634,6 +634,6 @@ def MyFullDiscreteFactorialHMM(n_steps):
         R = random_state.rand(D)
         R /= R.sum()
         # In this example, random emission probabilities
-        params['obs_given_hidden'][list(st) + [Ellipsis]] = R
+        params['obs_given_hidden'][tuple(list(st) + [Ellipsis])] = R
 
-    return FullDiscreteFactorialHMM(params=params, n_steps=n_steps, calculate_on_init=True)
+    return FullDiscreteFactorialHMM(params=params, n_steps=n_steps, calculate_on_init=True), params

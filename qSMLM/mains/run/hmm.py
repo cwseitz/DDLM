@@ -11,7 +11,13 @@ with open('hmm.json', 'r') as f:
     config = json.load(f)
 
 n_steps = 100
-hmm = MyFullDiscreteFactorialHMM(n_steps)
+hmm, params = MyFullDiscreteFactorialHMM(n_steps)
+Z, X = hmm.Simulate(random_seed=None)
+R = hmm.EM(X, likelihood_precision=0.1, n_iterations=1000, verbose=True, print_every=1, random_seed=None)
+
+T = params['transition_matrices']
+Te1, Te2, Te3, Te4 = R.transition_matrices_tensor[0]
+print(T[0],Te1)
 
 """
 prefixes = [
