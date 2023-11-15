@@ -1,7 +1,0 @@
-README.md
-setup.py
-qSMLM/__init__.py
-qSMLM.egg-info/PKG-INFO
-qSMLM.egg-info/SOURCES.txt
-qSMLM.egg-info/dependency_links.txt
-qSMLM.egg-info/top_level.txt
