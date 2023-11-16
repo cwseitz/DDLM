@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import json
 
-config_path = 'gq2d.json' #replace with path to your config
+config_path = 'cov_full.json' #replace with path to your config
 with open(config_path, 'r') as f:
     config = json.load(f)
 

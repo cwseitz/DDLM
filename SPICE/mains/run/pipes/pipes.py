@@ -5,10 +5,61 @@ import matplotlib.pyplot as plt
 import json
 import time
 from pathlib import Path
-from qSMLM.localize import LoGDetector
-from qSMLM.utils import *
+from SPICE.localize import LoGDetector
+from SPICE.utils import *
 from numpy.linalg import inv
 from skimage.filters import median
+
+class PipelineCMOS:
+    def __init__(self,config,dataset):
+        self.config = config
+        self.analpath = config['analpath']
+        self.datapath = config['datapath']
+        self.dataset = dataset
+        self.stack = dataset.stack
+        Path(self.analpath+self.dataset.name).mkdir(parents=True, exist_ok=True)     
+    def localize(self,plot_spots=False,peak_thresh=0.1):
+        path = self.analpath+self.dataset.name+'/'+self.dataset.name+'_spots.csv'
+        file = Path(path)
+        nt,nx,ny = self.stack.shape
+        frame = self.stack[0]
+        normed = frame/frame.max()
+        med = median(normed)
+        threshold = self.config['thresh_log']
+        log = LoGDetector(med,min_sigma=1,max_sigma=3,threshold=threshold)
+        spots = log.detect()
+        peaks = frame[spots['x'].values.astype(np.int16),
+                       spots['y'].values.astype(np.int16)]
+        spots['peaks'] = peaks
+        if plot_spots:
+            log.show(X=normed); plt.show()
+        return spots, peaks
+
+class PipelineSPAD:
+    def __init__(self,config,dataset):
+        self.config = config
+        self.analpath = config['analpath']
+        self.datapath = config['datapath']
+        self.dataset = dataset
+        self.stack = dataset.stack
+        Path(self.analpath+self.dataset.name).mkdir(parents=True, exist_ok=True)     
+    def localize(self,plot_spots=False,peak_thresh=0.1):
+        path = self.analpath+self.dataset.name+'/'+self.dataset.name+'_spots.csv'
+        file = Path(path)
+        nt,nx,ny = self.stack.shape
+        summed = np.sum(self.stack,axis=0)
+        sum_normed = summed/summed.max()
+        med = median(sum_normed)
+        threshold = self.config['thresh_log']
+        log = LoGDetector(med,min_sigma=1,max_sigma=3,threshold=threshold)
+        spots = log.detect()
+        peaks = summed[spots['x'].values.astype(np.int16),
+                       spots['y'].values.astype(np.int16)]
+        spots['peaks'] = peaks
+        if plot_spots:
+            log.show(X=summed); plt.show()
+        return spots, peaks
+
 
 class PipelineG22D:
     def __init__(self,config,dataset):
