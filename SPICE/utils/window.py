@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
-from ..psf.psf2d import *
 from .cov import *
 
 def Exy_em_win(stack,win_size=100):

@@ -13,7 +13,7 @@ from scipy.optimize import minimize
 from scipy.special import factorial
 
 from ..utils import *
-from ..psf.psf2d.psf2d import *
+from BaseSMLM.psf.psf2d.psf2d import *
 
 class SPAD2D:
     """Simulates a small ROI of a 2D spad array 
