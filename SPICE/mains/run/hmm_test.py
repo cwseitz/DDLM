@@ -58,14 +58,14 @@ if __name__ == '__main__':
 
     prop_per_state = model.predict_proba(X).mean(axis=0)
 
-    bins = sorted(np.unique(X))
-    fig, ax = plt.subplots()
-    ax.hist(X, bins=bins, density=True)
-    ax.plot(bins, poisson.pmf(bins, model.lambdas_).T @ prop_per_state)
-    ax.set_title('Histogram with Fitted Poisson States')
+    bins = np.arange(0,20,1)
+    hist,bins = np.histogram(X,bins=bins,density=True)
+    width = 0.7 * (bins[1] - bins[0])
+    ax.bar(bins[:-1], hist, color='black',align='center', width=width)
+    ax.plot(bins, poisson.pmf(bins, model.lambdas_).T @ prop_per_state,color='blue')
     ax.set_xlabel('X')
-    ax.set_ylabel('Proportion')
-    #plt.show()
+    ax.set_ylabel('Probability')
+    plt.show()
 
     """
     # initialise object with overestimate of true number of latent states
