@@ -15,29 +15,30 @@ from scipy.special import factorial
 from ..utils import *
 from BaseSMLM.psf.psf2d.psf2d import *
 
-class SPAD2D:
+class SPAD2D_Ring:
     """Simulates a small ROI of a 2D spad array 
     (SPAD photon counting camera)"""
     def __init__(self,config):
         self.config = config
 
-    def sample_uniform_circle(self, x0, y0, r, n_samples):
-        theta = np.random.uniform(0, 2*np.pi, n_samples)
-        radius = np.sqrt(np.random.uniform(0, 1, n_samples)) * r
-        x = x0 + radius * np.cos(theta)
-        y = y0 + radius * np.sin(theta)
-        return x, y
+    def ring(self,n,radius=3,phase=0):
+        thetas = np.arange(0,n,1)*2*np.pi/n
+        xs = radius*np.cos(thetas+phase)
+        ys = radius*np.sin(thetas+phase)
+        return xs,ys
 
-    def generate(self,r=4,plot=False):
+    def generate(self,ring_radius=3,show=False):
         theta = np.zeros((3,self.config['particles']))
         nx,ny = self.config['nx'],self.config['ny']
-        xsamp,ysamp = self.sample_uniform_circle(nx/2,ny/2,r,self.config['particles'])
-        theta[0,:] = ysamp
-        theta[1,:] = xsamp
+        xsamp,ysamp = self.ring(self.config['particles'],radius=ring_radius)
+        x0 = nx/2; y0 = ny/2
+        theta[0,:] = ysamp + x0
+        theta[1,:] = xsamp + y0
         theta[2,:] = self.config['sigma']
-        
-        photons,probsum = self.get_counts(theta,lam0=self.config['lam0'])
-        return photons, probsum
+        counts,probsum = self.get_counts(theta,lam0=self.config['lam0'])
+        if show:
+            self.show(theta,counts)
+        return counts, probsum, theta
         
     def add_photons(self,prob,counts):
         """Distribute photons over space"""
@@ -52,7 +53,7 @@ class SPAD2D:
         return result
             
     
-    def distribute(self,nphotons,nt):
+    def tdistribute(self,nphotons,nt):
         """Distribute photons over time"""
         vec = np.zeros(nt,dtype=int)
         indices = np.random.choice(nt,nphotons,replace=True)
@@ -69,18 +70,46 @@ class SPAD2D:
         probsum = np.zeros((nx,ny))
         for n in range(self.config['particles']):
             nphotons = np.random.poisson(lam=lam0)
-            countvec = self.distribute(nphotons,self.config['nt'])
+            countvec = self.tdistribute(nphotons,self.config['nt'])
             prob = np.zeros((self.config['nx'],self.config['ny']),dtype=np.float32)
             x0,y0,sigma = theta[:,n]
             patchx, patchy = int(round(x0))-patch_hw, int(round(y0))-patch_hw
             x0p = x0-patchx; y0p = y0-patchy
             lam = lamx(X,y0p,sigma)*lamy(Y,x0p,sigma)
+            lam /= lam.sum()
             prob[patchx:patchx+2*patch_hw,patchy:patchy+2*patch_hw] += lam
             probsum += prob
             for m in range(nt):
                 photons[m,:,:] += self.add_photons(prob,countvec[m])
+        probsum /= probsum.sum()
         return photons,probsum
 
+    def get_spikes(self,xyz_np,upsample=4):
+        gain, offset, var = self.cmos_params
+        nx,ny = offset.shape
+        grid_shape = (nx,ny,1)
+        boolean_grid = batch_xyz_to_boolean_grid(xyz_np,
+                                                 upsample,
+                                                 self.config['pixel_size'],
+                                                 1,
+                                                 0,
+                                                 grid_shape)
+        return boolean_grid
+
+    def show(self,theta,counts):
+        fig,ax=plt.subplots(1,4)
+        csum = np.sum(counts,axis=0)
+        ax[0].scatter(theta[1,:],theta[0,:],color='black',s=5)
+        ax[0].set_aspect(1.0)
+        ax[1].imshow(csum,cmap=plt.cm.BuGn_r)
+        ax[2].imshow(counts[0],cmap='gray')
+        ax[3].plot(np.sum(counts,axis=(1,2)),color='black')
+        ax[3].set_xlabel('Time'); ax[3].set_ylabel('Counts')
+        ax[3].set_aspect(4.0)
+        ax[0].set_xlim([0,self.config['nx']])
+        ax[0].set_ylim([0,self.config['ny']])
+        ax[0].invert_yaxis()
+        plt.tight_layout()
 
 
 
