@@ -31,28 +31,34 @@ class SPICEG:
         theta0 = np.concatenate([theta,theta_],axis=0)
         return theta0
         
-    def CNN(self):
+    def CNN(self,Sx):
         """Models P(B|S)"""
         cnn_config = {'thresh_cnn':20,'radius':4,'pixel_size_lateral':108.3}
         model = Ring_Rad1_K5_SPAD(cnn_config)
-        adu = adu[np.newaxis,np.newaxis,:,:]
-        spots,bstar = model.forward(adu)
+        Sx = Sx[np.newaxis,np.newaxis,:,:]
+        spots,B = model.forward(Sx)
+        return B
         
-    def Langevin(self):
+    def Langevin(self,Sx,theta0):
         """Models P(theta|theta0)"""
-        adu = np.squeeze(adu)
+        Sx = np.squeeze(Sx)
         lr = torch.tensor(np.array([1e-9,1e-9,0.0,0.0])) #only update x,y
-        theta,loglikes = run_langevin_dynamics(adu,initial_params=theta_init,lr=lr,
+        theta,loglikes = run_langevin_dynamics(Sx,initial_params=theta0,lr=lr,
                                                num_samples=1000,warmup_steps=100,print_every=100)
         print(f'Average log likelihood: {np.mean(loglikes)}')
         
-    def Poisson(self,X):
+    def Poisson(self,X,lam0=1.0):
         """Models P(M|X)"""
-        print(X.shape)
-        return None
+        Y = np.sum(X,axis=(1,2))
+        avg = np.mean(Y)
+        M = np.round(avg/lam0).astype(np.int)
+        return M
         
     def forward(self,X):
         M = self.Poisson(X)
-        #B = self.CNN(X)
+        Sx = np.sum(X,axis=0)
+        B = self.CNN(Sx)
+        theta0 = self.Theta0(B,M)
+        self.Langevin(Sx,theta0)
 
        
