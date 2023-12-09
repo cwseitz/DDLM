@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from BaseSMLM.generators import *
-from SPICE import SPICEG
+from SPICE import SPICE
 
 def show(adu,spikes,theta):
     nx,ny = adu.shape
@@ -18,14 +18,15 @@ def show(adu,spikes,theta):
     
     
 nx = ny = 20
-radius = 1.0
+radius = 3.0
 nspots = 5
-ring2d = Ring2D(nx,ny)
-counts,spikes,theta_star = ring2d.forward(radius,nspots,N0=1,offset=0.0,var=0.0,nframes=1000)
+
+brown2d = Brownian2D(nx,ny)
+counts,spikes,theta_star = brown2d.forward(radius,nspots,N0=1,offset=0.0,var=0.0,nframes=1000)
 
 adu = np.sum(counts,axis=0)
 show(adu,spikes[0],theta_star)
 plt.show()
 
-spice = SPICEG()
-spice.forward(counts)
+#spice = SPICE()
+#spice.forward(counts,theta0=theta_star,num_samples=100)
