@@ -19,18 +19,19 @@ def show(adu,spikes,theta):
     
     
 nx = ny = 20
-radius = 2.0
+radius = 3
 nspots = 1
 
 disc2d = Disc2D_TwoState(nx,ny)
-counts,spikes,theta_star = disc2d.forward(radius,nspots,N0=100,B0=0.0,offset=100.0,var=5.0,nframes=1000,show=False)
+counts,spikes,theta_star = disc2d.forward(radius,nspots,N0=100,B0=1.0,offset=0.0,var=0.0,show=False,nframes=1000)
 S = np.sum(counts,axis=0)
 
 Exy,ExEy = Double(counts)
 Exy = Exy[0]
-G2 = Exy/(ExEy+1e-8)
+G2 = Exy/(ExEy+1e-14)
 fig,ax=plt.subplots(1,4,sharex=False,sharey=False)
 ax[0].imshow(S)
+ax[0].scatter(theta_star[1,:],theta_star[0,:],s=3)
 ax[1].imshow(Exy)
 ax[2].imshow(ExEy)
 ax[3].imshow(G2)
