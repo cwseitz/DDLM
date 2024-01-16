@@ -6,7 +6,7 @@ from DeepSMLM.models import Ring_Rad1_K5_SPAD
 from oci.mcmc import run_langevin_dynamics
 from scipy.stats import poisson
 
-class oci:
+class OCI:
     def __init__(self):
         pass
         

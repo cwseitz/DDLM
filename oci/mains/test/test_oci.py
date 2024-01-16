@@ -20,15 +20,16 @@ def show(adu,spikes,theta):
     
     
 nx = ny = 20
-radius = 3
+radius = 0.0001 #center it in the frame
 nspots = 1
 
 disc2d = Disc2D_TwoState(nx,ny)
-counts,spikes,theta_star = disc2d.forward(radius,nspots,N0=10,B0=0.0,offset=0.0,var=0.0,show=False,nframes=1000)
-S = np.sum(counts,axis=0)
+counts,spikes,theta_star = disc2d.forward(radius,nspots,N0=10,B0=0.0,sigma=0.552,offset=0.0,var=0.0,show=False,nframes=1000)
+S = np.sum(counts,axis=0)/np.sum(counts) #probabilities
 
 viewer = napari.Viewer()
 viewer.add_image(counts, colormap='gray', name='Stack')
+viewer.add_image(S, colormap='gray', name='Sum')
 napari.run()
 
 Exy,ExEy = Double(counts)
