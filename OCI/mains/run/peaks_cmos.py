@@ -1,5 +1,5 @@
 from pipes import *
-from SPICE.utils import SMLMDataset
+from oci.utils import SMLMDataset
 from skimage.io import imsave
 import matplotlib.pyplot as plt
 import pandas as pd

@@ -1,7 +1,7 @@
 import numpy as np
 import json
 import matplotlib.pyplot as plt
-from SPICE.utils import *
+from oci.utils import *
 from hmmlearn import hmm
 from scipy.stats import poisson
 from skimage.io import imread, imsave

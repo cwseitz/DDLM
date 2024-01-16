@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import json
 import time
 from pathlib import Path
-from SPICE.localize import LoGDetector
-from SPICE.utils import *
+from oci.localize import LoGDetector
+from oci.utils import *
 from numpy.linalg import inv
 from skimage.filters import median
 

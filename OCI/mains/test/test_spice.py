@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import torch
 import napari
 from BaseSMLM.generators import *
-from SPICE import SPICE
-from SPICE.utils import Double
+from oci import oci
+from oci.utils import Double
 
 def show(adu,spikes,theta):
     nx,ny = adu.shape
@@ -41,5 +41,5 @@ ax[1].imshow(Exy)
 ax[2].imshow(ExEy)
 ax[3].imshow(G2)
 plt.show()
-#spice = SPICE()
+#spice = oci()
 #spice.forward(counts,theta0=theta_star,num_samples=100)

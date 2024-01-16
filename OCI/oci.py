@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import torch
 from BaseSMLM.generators import *
 from DeepSMLM.models import Ring_Rad1_K5_SPAD
-from SPICE.mcmc import run_langevin_dynamics
+from oci.mcmc import run_langevin_dynamics
 from scipy.stats import poisson
 
-class SPICE:
+class oci:
     def __init__(self):
         pass
         

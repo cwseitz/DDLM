@@ -1,7 +1,7 @@
 import numpy as np
 import json
 import matplotlib.pyplot as plt
-from SPICE.utils import *
+from oci.utils import *
 from skimage.io import imread, imsave
 import napari
 from PIL import Image
