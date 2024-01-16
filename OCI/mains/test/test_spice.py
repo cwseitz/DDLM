@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+import napari
 from BaseSMLM.generators import *
 from SPICE import SPICE
 from SPICE.utils import Double
@@ -23,8 +24,12 @@ radius = 3
 nspots = 1
 
 disc2d = Disc2D_TwoState(nx,ny)
-counts,spikes,theta_star = disc2d.forward(radius,nspots,N0=100,B0=1.0,offset=0.0,var=0.0,show=False,nframes=1000)
+counts,spikes,theta_star = disc2d.forward(radius,nspots,N0=10,B0=0.0,offset=0.0,var=0.0,show=False,nframes=1000)
 S = np.sum(counts,axis=0)
+
+viewer = napari.Viewer()
+viewer.add_image(counts, colormap='gray', name='Stack')
+napari.run()
 
 Exy,ExEy = Double(counts)
 Exy = Exy[0]
