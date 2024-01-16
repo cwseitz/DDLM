@@ -30,12 +30,11 @@ def plot_g_squared_for_xi_fixed_N0(xi_values, N0, hi, hj, B0):
 # Example usage
 xi_values = np.linspace(0, 1, 100)
 B0 = 1.0
-hi = np.sqrt(0.1)
-hj = np.sqrt(0.1)
-N0_fixed = 10.0
+hi = np.sqrt(0.415)
+hj = np.sqrt(0.03)
+N0_fixed = 5.0
 plot_g_squared_for_xi_fixed_N0(xi_values, N0_fixed, hi, hj, B0)
 
 xi_values = [0.2,0.5,1.0]
 N0_values = np.linspace(0,100,100)
 plot_g_squared_for_xi(xi_values, N0_values, hi, hj, B0)
-
