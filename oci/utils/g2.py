@@ -37,7 +37,7 @@ def Sind(npixels):
     Hind = np.where(checker == 2); Dind = np.where(checker == 4)
     return Vind, RLind, Hind, Dind
     
-def Double(adu):
+def G2(adu):
 
     nt,nx,ny = adu.shape
     adu = adu.astype(np.float64)
@@ -72,7 +72,8 @@ def Double(adu):
     #ExEy[Dind[0],Dind[1]] = _ExEy[Ed[0],Ed[1]]
     ExEy[Dind[0],Dind[1]] = 0.0
     
-    return Exy,ExEy
+    return Exy[0]/(ExEy+1e-14)
+    
     
     
     

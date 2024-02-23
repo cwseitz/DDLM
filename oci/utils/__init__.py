@@ -1,3 +1,3 @@
 from .window import *
 from .cov import *
-from .double import *
+from .g2 import *
