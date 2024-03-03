@@ -1,8 +1,0 @@
-README.md
-setup.py
-OCI.egg-info/PKG-INFO
-OCI.egg-info/SOURCES.txt
-OCI.egg-info/dependency_links.txt
-OCI.egg-info/top_level.txt
-oci/__init__.py
-oci/oci.py
