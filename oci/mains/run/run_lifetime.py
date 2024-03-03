@@ -12,11 +12,11 @@ prefixes = [
 ]
 
 prefixes = [
-'240206_QD-10ms-488-5V_3-Crop'
+'240110_Control_JF646_4pm_overnight_L640_30mW_10ms____10'
 ]
 
 prefixes = [
-'240110_Control_JF646_4pm_overnight_L640_30mW_10ms____10'
+'240206_QD-10ms-488-5V_3-Crop'
 ]
 
 
@@ -27,7 +27,7 @@ with open('run_lifetime.json', 'r') as f:
 for prefix in prefixes:
     stack = imread(config['path'] + prefix + '.tif')
     pipe = LifetimeHMM(stack)
-    pipe.forward(show_spots=True,show_hmm=True,min_comp=2,max_comp=10,
+    pipe.forward(show_spots=True,show_hmm=True,min_comp=2,max_comp=4,
                  show_hist=False,threshold=0.001)
 
 
