@@ -1,0 +1,82 @@
+{
+    "name": "distributed_high_sr",
+    "phase": "train",
+    "gpu_ids": [
+        0,1
+    ],
+    "path": {
+        "log": "logs",
+        "tb_logger": "tb_logger",
+        "results": "results",
+        "checkpoint": "checkpoint",
+        "resume_state": null
+    },
+    "datasets": {
+        "train": {
+            "name": "Diffusion",
+            "mode": "HR",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "datatype": "img",
+            "l_resolution": 20,
+            "r_resolution": 80,
+            "batch_size": 2,
+            "num_workers": 8,
+            "use_shuffle": true,
+            "data_len": -1
+        },
+        "val": {
+            "name": "Diffusion",
+            "mode": "LRHR",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "datatype": "img",
+            "l_resolution": 20,
+            "r_resolution": 80,
+            "data_len": 50
+        }
+    },
+    "model": {
+        "which_model_G": "sr3",
+        "finetune_norm": false,
+        "deep_storm": {
+            "nz": 1,
+            "scaling_factor": 800
+        },
+        "beta_schedule": {
+            "train": {
+                "schedule": "linear",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            },
+            "val": {
+                "schedule": "linear",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            }
+        },
+        "diffusion": {
+            "image_size": 256,
+            "channels": 1,
+            "conditional": true
+        }
+    },
+    "train": {
+        "n_iter": 1000000,
+        "val_freq": 1e4,
+        "save_checkpoint_freq": 1e4,
+        "print_freq": 50,
+        "optimizer": {
+            "type": "adam",
+            "lr": 3e-6
+        },
+        "ema_scheduler": { // not used now
+            "step_start_ema": 5000,
+            "update_ema_every": 1,
+            "ema_decay": 0.9999
+        }
+    },
+    "wandb": {
+        "project": "distributed_high_sr"
+    }
+}

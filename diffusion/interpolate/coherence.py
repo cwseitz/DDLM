@@ -36,6 +36,20 @@ def Sind(npixels):
     Vind = np.where(checker == 0); RLind = np.where(checker == 1)
     Hind = np.where(checker == 2); Dind = np.where(checker == 4)
     return Vind, RLind, Hind, Dind
+  
+def linear_interpolation(image):
+    rows, cols = image.shape
+    interpolated_image = np.zeros_like(image)
+    nx,ny = image.shape
+    zero_pixels = np.argwhere(image == 0)
+    for row, col in zero_pixels:
+        if row > 0 and row < nx-1 and col > 0 and col < ny-1:
+            image[row, col] = (image[row+1, col]+image[row-1, col]+image[row, col+1]+image[row, col-1])/4
+        else:
+            image[row,col] = 1.0
+    image = np.pad(image,((0,1),(0,1)))
+    image[-1,:] = 1.0; image[:,-1] = 1.0
+    return image
     
 def G2(adu):
 
@@ -71,8 +85,9 @@ def G2(adu):
     ExEy[Hind[0],Hind[1]] = _ExEy[Eh[0],Eh[1]]
     #ExEy[Dind[0],Dind[1]] = _ExEy[Ed[0],Ed[1]]
     ExEy[Dind[0],Dind[1]] = 0.0
+    g2 = linear_interpolation(Exy[0]/(ExEy+1e-14))
     
-    return Exy[0]/(ExEy+1e-14)
+    return g2
     
     
     
