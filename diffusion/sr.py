@@ -85,7 +85,6 @@ if __name__ == "__main__":
                 current_step += 1
                 if current_step > n_iter:
                     break
-                 
                 diffusion.feed_data(train_data)
                 diffusion.optimize_parameters()
                 # log

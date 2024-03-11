@@ -18,20 +18,20 @@ class Conv2DLeakyReLUBN(nn.Module):
 class DeepSTORM(nn.Module):
     def __init__(self, nz, scaling_factor, dilation_flag=True):
         super(DeepSTORM, self).__init__()
-        self.norm = nn.BatchNorm2d(num_features=1, affine=True)
-        self.layer1 = Conv2DLeakyReLUBN(1, 64, 3, 1, 1, 0.2)
-        self.layer2 = Conv2DLeakyReLUBN(64 + 1, 64, 3, 1, 1, 0.2)
+        self.norm = nn.BatchNorm2d(num_features=2, affine=True)
+        self.layer1 = Conv2DLeakyReLUBN(2, 64, 3, 1, 1, 0.2)
+        self.layer2 = Conv2DLeakyReLUBN(64 + 2, 64, 3, 1, 1, 0.2)
         if dilation_flag:
-            self.layer3 = Conv2DLeakyReLUBN(64 + 1, 64, 3, (2, 2), (2, 2), 0.2)
-            self.layer4 = Conv2DLeakyReLUBN(64 + 1, 64, 3, (4, 4), (4, 4), 0.2)
-            self.layer5 = Conv2DLeakyReLUBN(64 + 1, 64, 3, (8, 8), (8, 8), 0.2)
-            self.layer6 = Conv2DLeakyReLUBN(64 + 1, 64, 3, (16, 16), (16, 16), 0.2)
+            self.layer3 = Conv2DLeakyReLUBN(64 + 2, 64, 3, (2, 2), (2, 2), 0.2)
+            self.layer4 = Conv2DLeakyReLUBN(64 + 2, 64, 3, (4, 4), (4, 4), 0.2)
+            self.layer5 = Conv2DLeakyReLUBN(64 + 2, 64, 3, (8, 8), (8, 8), 0.2)
+            self.layer6 = Conv2DLeakyReLUBN(64 + 2, 64, 3, (16, 16), (16, 16), 0.2)
         else:
-            self.layer3 = Conv2DLeakyReLUBN(64 + 1, 64, 3, (2, 2), (2, 2), 0.2)
-            self.layer4 = Conv2DLeakyReLUBN(64 + 1, 64, 3, (4, 4), (4, 4), 0.2)
-            self.layer5 = Conv2DLeakyReLUBN(64 + 1, 64, 3, 1, 1, 0.2)
-            self.layer6 = Conv2DLeakyReLUBN(64 + 1, 64, 3, 1, 1, 0.2)
-        self.deconv1 = Conv2DLeakyReLUBN(64 + 1, 64, 3, 1, 1, 0.2)
+            self.layer3 = Conv2DLeakyReLUBN(64 + 2, 64, 3, (2, 2), (2, 2), 0.2)
+            self.layer4 = Conv2DLeakyReLUBN(64 + 2, 64, 3, (4, 4), (4, 4), 0.2)
+            self.layer5 = Conv2DLeakyReLUBN(64 + 2, 64, 3, 1, 1, 0.2)
+            self.layer6 = Conv2DLeakyReLUBN(64 + 2, 64, 3, 1, 1, 0.2)
+        self.deconv1 = Conv2DLeakyReLUBN(64 + 2, 64, 3, 1, 1, 0.2)
         self.deconv2 = Conv2DLeakyReLUBN(64, 64, 3, 1, 1, 0.2)
         self.layer7 = Conv2DLeakyReLUBN(64, nz, 3, 1, 1, 0.2)
         self.layer8 = Conv2DLeakyReLUBN(nz, nz, 3, 1, 1, 0.2)
@@ -39,7 +39,7 @@ class DeepSTORM(nn.Module):
         self.layer10 = nn.Conv2d(nz, nz, kernel_size=1, dilation=1)
         self.pred = nn.Hardtanh(min_val=0.0, max_val=scaling_factor)
 
-    def forward(self, im):
+    def forward(self, im, t):
 
         # extract multi-scale features
         im = self.norm(im)

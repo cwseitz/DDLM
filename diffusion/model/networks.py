@@ -75,17 +75,18 @@ def init_weights(net, init_type='kaiming', scale=1, std=0.02):
             'initialization method [{:s}] not implemented'.format(init_type))
 
 
-
-# Generator
+"""
 def define_G(opt):
     model_opt = opt['model']
-    from .deep_storm import deep_storm, diffusion
-    model = deep_storm.DeepSTORM(
-        model_opt['deep_storm']['nz'],
-        model_opt['deep_storm']['scaling_factor']
-    )
+    #from .deep_storm import deep_storm, diffusion
+    from .care import care, diffusion
+    model = care.CARE()
+    #model = deep_storm.DeepSTORM(
+    #    model_opt['deep_storm']['nz'],
+    #    model_opt['deep_storm']['scaling_factor']
+    #)
     model = model.cuda()
-    summary(model,(1,50,50))
+    #summary(model,(1,50,50))
     netG = diffusion.GaussianDiffusion(
         model,
         image_size=model_opt['diffusion']['image_size'],
@@ -102,12 +103,14 @@ def define_G(opt):
         assert torch.cuda.is_available()
         netG = nn.DataParallel(netG)
     return netG
+    
+    
+"""
 
 ####################
 # define network
 ####################
 
-"""
 # Generator
 def define_G(opt):
     model_opt = opt['model']
@@ -117,7 +120,7 @@ def define_G(opt):
         from .sr3_modules import diffusion, unet
     if ('norm_groups' not in model_opt['unet']) or model_opt['unet']['norm_groups'] is None:
         model_opt['unet']['norm_groups']=32
-    print(model_opt['unet'])
+
     model = unet.UNet(
         in_channel=model_opt['unet']['in_channel'],
         out_channel=model_opt['unet']['out_channel'],
@@ -129,7 +132,7 @@ def define_G(opt):
         dropout=model_opt['unet']['dropout'],
         image_size=model_opt['diffusion']['image_size']
     )
-    summary(model,(1,50,50))
+    #summary(model,(1,50,50))
     netG = diffusion.GaussianDiffusion(
         model,
         image_size=model_opt['diffusion']['image_size'],
@@ -145,4 +148,4 @@ def define_G(opt):
         assert torch.cuda.is_available()
         netG = nn.DataParallel(netG)
     return netG
-"""
+

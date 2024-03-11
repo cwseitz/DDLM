@@ -2,7 +2,11 @@ import math
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torchvision.transforms import GaussianBlur
 from inspect import isfunction
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('TkAgg')
 
 def exists(x):
     return x is not None
@@ -218,8 +222,11 @@ class UNet(nn.Module):
         self.final_conv = Block(pre_channel, default(out_channel, in_channel), groups=norm_groups)
 
     def forward(self, x, time):
+        #fig,ax=plt.subplots(1,2)
+        #ax[0].imshow(x[0,0].cpu().detach().numpy())
+        #ax[1].imshow(x[0,1].cpu().detach().numpy())
+        #plt.show()
         t = self.time_mlp(time) if exists(self.time_mlp) else None
-
         feats = []
         for layer in self.downs:
             if isinstance(layer, ResnetBlocWithAttn):
@@ -236,8 +243,16 @@ class UNet(nn.Module):
 
         for layer in self.ups:
             if isinstance(layer, ResnetBlocWithAttn):
-                x = layer(torch.cat((x, feats.pop()), dim=1), t)
+                y = feats.pop()
+                x = layer(torch.cat((x, y), dim=1), t)
             else:
                 x = layer(x)
-
-        return self.final_conv(x)
+                
+        out = self.final_conv(x)
+        #fig,ax=plt.subplots(1,2)
+        #ax[0].imshow(out[0,0].cpu().detach().numpy())
+        #gb = GaussianBlur(3, sigma=3.0)
+        #out = gb(out)
+        #ax[1].imshow(out[0,0].cpu().detach().numpy())
+        #plt.show()
+        return out
