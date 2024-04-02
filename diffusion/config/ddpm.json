@@ -1,5 +1,5 @@
 {
-    "name": "distributed_high_sr",
+    "name": "ddpm_1_2_4_8_16",
     "phase": "train",
     "gpu_ids": [
         0,1
@@ -10,12 +10,13 @@
         "results": "results",
         "checkpoint": "checkpoint",
         "resume_state": null
+        //"resume_state": "experiments/ddpm_1_2_4_8_16_sp92/checkpoint/I1000000_E2000"
     },
     "datasets": {
         "train": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion_8",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -26,8 +27,8 @@
         },
         "val": {
             "name": "Diffusion",
-            "mode": "LRHR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "mode": "HR",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion_8",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -57,13 +58,13 @@
         "beta_schedule": {
             "train": {
                 "schedule": "linear",
-                "n_timestep": 1000,
+                "n_timestep": 2000,
                 "linear_start": 1e-6,
                 "linear_end": 1e-2
             },
             "val": {
                 "schedule": "linear",
-                "n_timestep": 1000,
+                "n_timestep": 2000,
                 "linear_start": 1e-6,
                 "linear_end": 1e-2
             }

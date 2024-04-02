@@ -1,8 +1,9 @@
 README.md
 setup.py
-diffusion/__init__.py
+diffusion/bayes.py
 diffusion/eval.py
 diffusion/infer.py
+diffusion/plot.py
 diffusion/sample.py
 diffusion/sr.py
 diffusion.egg-info/PKG-INFO

@@ -1,1 +1,3 @@
 *.pyc
+diffusion/dataset/*
+diffusion/experiments/*
