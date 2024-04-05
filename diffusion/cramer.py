@@ -8,6 +8,7 @@ import core.logger as Logger
 import core.metrics as Metrics
 import matplotlib.pyplot as plt
 import os
+from skimage.feature import blob_log
 from core.wandb_logger import WandbLogger
 from tensorboardX import SummaryWriter
 from skimage.io import imsave
@@ -15,6 +16,7 @@ from dataset import Dataset
 from generators import *
 from model.deep_storm import NeuralEstimator2D
 from BaseSMLM.utils import BasicKDE
+from errors import errors2d
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -45,28 +47,30 @@ if __name__ == "__main__":
     Z = Z[np.newaxis,np.newaxis,:,:]
     kde = BasicKDE(theta[:2,:].T)
     S = kde.forward(nx,sigma=1.5,upsample=4)
-    fig,ax=plt.subplots()
-    ax.imshow(S,cmap='gray')
-    ax.scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=5)
-    plt.show()
     
     data_dict = {}
     data_dict['HR'] = torch.from_numpy(Z)
     data_dict['SR'] = torch.from_numpy(Z)
     data_dict['LR'] = torch.from_numpy(X)
     data_dict['Index'] = torch.from_numpy(np.array([0]))
-    nsamples=1
+    nsamples=2
     for n in range(nsamples):
         diffusion.feed_data(data_dict)
         diffusion.test(continous=True)
         visuals = diffusion.get_current_visuals(need_LR=True)
+        pred = np.squeeze(visuals['SR'])[-1]
+        coords = blob_log(pred,min_sigma=2,max_sigma=3,num_sigma=5)
+        coords = coords[:,:2]
+        xerr,yerr = errors2d(4*theta[:2,:].T,coords)
+        print(xerr,yerr)
         fig,ax=plt.subplots(1,3)
         ax[0].imshow(np.squeeze(visuals['LR']),cmap='gray')
         ax[0].scatter(theta[1,:],theta[0,:],marker='x',color='red',s=5)
         ax[1].imshow(np.squeeze(visuals['HR']),cmap='gray')
         ax[1].scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=5)
-        ax[2].imshow(np.squeeze(visuals['SR'])[-1],cmap='gray')
+        ax[2].imshow(pred,cmap='gray')
         ax[2].scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=5)
+        ax[2].scatter(coords[:,1],coords[:,0],marker='x',color='blue',s=5)
         plt.show()
 
 
