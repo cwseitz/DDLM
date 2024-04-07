@@ -9,14 +9,14 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": "experiments/ddpm_240403_225731/checkpoint/I290000_E580"
+        "resume_state": "networks/diffusion/checkpoint/I1000000_E2000"
     },
     "deep_storm": {
           "thresh_cnn": 30, 
           "radius": 3, 
           "pixel_size_lateral": 108.3,
-          "modelpath": "experiments/",
-          "modelname": "0331_211608"
+          "modelpath": "networks/encode/low_snr/",
+          "modelname": "0406_165458"
           },
     "datasets": {
         "train": {
@@ -34,7 +34,7 @@
         "val": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion_8",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
