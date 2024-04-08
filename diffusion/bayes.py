@@ -68,7 +68,8 @@ if __name__ == "__main__":
     spots = pipe.localize(threshold=0.2,plot_spots=False,fit=True)
     fig,ax=plt.subplots()
     ax.imshow(pred,cmap='gray')
-    ax.scatter(spots['y_lsq'],spots['x_lsq'],marker='x',color='blue',s=10)
+    ax.scatter(spots['y_lsq'],spots['x_lsq'],
+               marker='x',color='blue',s=10)
     plt.show()
     print(spots[['x_lsq','y_lsq','sigma','N0','conv']])
 
