@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from .psf.psf2d.psf2d import *
+from psf.psf2d.psf2d import *
 from scipy.stats import poisson
 
 class Density:

@@ -41,14 +41,14 @@ if __name__ == "__main__":
     radius = 7.0
     nspots = 10
     niters = 1000
-    plot=False
+    plot = False
 
     all_x_err = []; all_y_err = []; all_inter = []; all_union = []
     all_x_terr = []; all_y_terr = []; all_tinter = []; all_tunion = []
     for n in range(niters):
     
         disc2D = Disc2D(nx,ny)
-        X,_,theta = disc2D.forward(radius,nspots,N0=500,show=False)
+        X,_,theta = disc2D.forward(radius,nspots,N0=1000,show=False)
         X = X[np.newaxis,np.newaxis,:,:]
         tcoords,Z = encoder.forward(X)
         tcoords = tcoords[['x','y']].values

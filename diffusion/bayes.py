@@ -15,11 +15,11 @@ from dataset import Dataset
 from generators import *
 from model.deep_storm import NeuralEstimator2D
 from BaseSMLM.utils import BasicKDE
-from skimage.feature import blob_log
+from psf import PipelineLocalize
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', type=str, default='config/sr_sr3_64_512.json',
+    parser.add_argument('-c', '--config', type=str, default='',
                         help='JSON file for configuration')
     parser.add_argument('-p', '--phase', type=str, choices=['val'], help='val(generation)', default='val')
     parser.add_argument('-gpu', '--gpu_ids', type=str, default=None)
@@ -52,23 +52,26 @@ if __name__ == "__main__":
     data_dict['SR'] = torch.from_numpy(Z)
     data_dict['LR'] = torch.from_numpy(X)
     data_dict['Index'] = torch.from_numpy(np.array([0]))
-    nsamples=3
+    nsamples=100
+    
+    stack = []
     for n in range(nsamples):
         diffusion.feed_data(data_dict)
         diffusion.test(continous=True)
         visuals = diffusion.get_current_visuals(need_LR=True)
-        pred = np.squeeze(visuals['SR'])[-1]
-        coords = blob_log(pred,min_sigma=2,max_sigma=3,
-                          num_sigma=5,threshold=0.2,exclude_border=5)
-        fig,ax=plt.subplots(1,3)
-        ax[0].imshow(np.squeeze(visuals['LR']),cmap='gray')
-        ax[0].scatter(theta[1,:],theta[0,:],marker='x',color='red',s=5)
-        ax[1].imshow(np.squeeze(visuals['HR']),cmap='gray')
-        ax[1].scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=5)
-        ax[2].imshow(np.squeeze(visuals['SR'])[-1],cmap='gray')
-        ax[2].scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=5)
-        ax[2].scatter(coords[:,1],coords[:,0],marker='x',color='blue',s=5)
+        pred = np.squeeze(visuals['SR'])[-1].numpy()
+        pred = pred - pred.min()
+        stack.append(pred)
+        
+    stack = np.array(stack)
+    pipe = PipelineLocalize(stack)
+    spots = pipe.localize(threshold=0.2,plot_spots=False,fit=True)
+    fig,ax=plt.subplots()
+    ax.imshow(pred,cmap='gray')
+    ax.scatter(spots['y_lsq'],spots['x_lsq'],marker='x',color='blue',s=10)
     plt.show()
+    print(spots[['x_lsq','y_lsq','sigma','N0','conv']])
+
 
 
 
