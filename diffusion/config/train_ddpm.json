@@ -9,15 +9,8 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": "networks/diffusion/checkpoint/I1000000_E2000"
+        "resume_state": null
     },
-    "deep_storm": {
-          "thresh_cnn": 30, 
-          "radius": 3, 
-          "pixel_size_lateral": 108.3,
-          "modelpath": "networks/encode/low_snr/",
-          "modelname": "0406_165458"
-          },
     "datasets": {
         "train": {
             "name": "Diffusion",
@@ -64,13 +57,13 @@
         "beta_schedule": {
             "train": {
                 "schedule": "linear",
-                "n_timestep": 100,
+                "n_timestep": 10,
                 "linear_start": 1e-6,
                 "linear_end": 1e-2
             },
             "val": {
                 "schedule": "linear",
-                "n_timestep": 100,
+                "n_timestep": 10,
                 "linear_start": 1e-6,
                 "linear_end": 1e-2
             }

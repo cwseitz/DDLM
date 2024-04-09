@@ -62,12 +62,16 @@ if __name__ == "__main__":
         pred = np.squeeze(visuals['SR'])[-1].numpy()
         pred = pred - pred.min()
         stack.append(pred)
+        fig,ax=plt.subplots()
+        ax.imshow(pred,cmap='gray')
+        plt.show()
         
     stack = np.array(stack)
     pipe = PipelineLocalize(stack)
     spots = pipe.localize(threshold=0.2,plot_spots=False,fit=True)
     fig,ax=plt.subplots()
     ax.imshow(pred,cmap='gray')
+    #ax.scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=10)
     ax.scatter(spots['y_lsq'],spots['x_lsq'],
                marker='x',color='blue',s=10)
     plt.show()
