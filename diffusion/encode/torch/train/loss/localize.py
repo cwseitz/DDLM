@@ -44,7 +44,7 @@ def dice_loss(pred, target):
 
 
 # create a 3D gaussian kernel
-def GaussianKernel(shape=(7, 7, 7), sigma=1, normfactor=1):
+def GaussianKernel(shape=(7, 7, 7), sigma=3, normfactor=1):
     """
     3D gaussian mask - should give the same result as MATLAB's
     fspecial('gaussian',[shape],[sigma]) in 3D
@@ -86,6 +86,11 @@ def KDE_loss3D(pred_bol, target_bol, factor=800):
     # KDE for both input and ground truth spikes
     Din = F.conv3d(pred_bol, kernel, padding=(int(np.round((D - 1) / 2)), 0, 0))
     Dtar = F.conv3d(target_bol, factor*kernel, padding=(int(np.round((D - 1) / 2)), 0, 0))
+    Din = pred_bol; Dtar = target_bol
+    #fig,ax=plt.subplots(1,2)
+    #ax[0].imshow(Din.cpu().detach().numpy()[0,0,0])
+    #ax[1].imshow(Dtar.cpu().detach().numpy()[0,0,0])
+    #plt.show()
 
     # kde loss
     kde_loss = nn.MSELoss()(Din, Dtar)
@@ -93,7 +98,8 @@ def KDE_loss3D(pred_bol, target_bol, factor=800):
     # final loss
     dice = dice_loss(pred_bol/factor, target_bol)
 
-    final_loss = kde_loss + dice
+    #final_loss = kde_loss + dice
+    final_loss = kde_loss
 
     return final_loss
 

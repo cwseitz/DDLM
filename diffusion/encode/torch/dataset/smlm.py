@@ -31,7 +31,8 @@ class SMLMDataset_Train(Dataset):
     """Looks for individal files for training"""
     def __init__(self,path,name):
         self.files_input = sorted(glob(path+'lr_20/*lr*.tif'))
-        self.files_target = sorted(glob(path+'spikes/*spikes*.tif'))
+        #self.files_target = sorted(glob(path+'spikes/*spikes*.tif'))
+        self.files_target = sorted(glob(path+'hr_80/*hr*.tif'))
     def __len__(self):
         return len(self.files_input)
     def __getitem__(self, idx):

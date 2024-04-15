@@ -27,8 +27,9 @@ def errors2d(xy,xy_est):
             all_y_err.append(yerr)   
                   
     inter = np.sum(np.array(bfound).astype(int)) #intersection
-    false_positives = len(bfound)-sum(bfound)
-    union = nspots+false_positives
+    fp = len(bfound)-sum(bfound)
+    union = nspots+fp
+    fn = nspots - inter
     all_x_err = np.array(all_x_err)
     all_y_err = np.array(all_y_err)
-    return all_x_err, all_y_err, inter, union
+    return all_x_err, all_y_err, inter, union, fp, fn

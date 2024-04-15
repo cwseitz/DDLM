@@ -11,6 +11,7 @@ import os
 from core.wandb_logger import WandbLogger
 from tensorboardX import SummaryWriter
 from skimage.io import imsave
+from skimage.filters import gaussian
 from dataset import Dataset
 from generators import *
 from model.deep_storm import NeuralEstimator2D
@@ -39,8 +40,10 @@ if __name__ == "__main__":
     nx = ny = 20
     radius = 7.0
     nspots = 10
+    nsamples = 10
+    
     disc2D = Disc2D(nx,ny)
-    X,_,theta = disc2D.forward(radius,nspots,N0=200,show=True)
+    X,_,theta = disc2D.forward(radius,nspots,N0=1000,show=False)
     X = X[np.newaxis,np.newaxis,:,:]
     _,Z = encoder.forward(X)
     Z = Z[np.newaxis,np.newaxis,:,:]
@@ -52,7 +55,6 @@ if __name__ == "__main__":
     data_dict['SR'] = torch.from_numpy(Z)
     data_dict['LR'] = torch.from_numpy(X)
     data_dict['Index'] = torch.from_numpy(np.array([0]))
-    nsamples=100
     
     stack = []
     for n in range(nsamples):
@@ -60,22 +62,31 @@ if __name__ == "__main__":
         diffusion.test(continous=True)
         visuals = diffusion.get_current_visuals(need_LR=True)
         pred = np.squeeze(visuals['SR'])[-1].numpy()
-        pred = pred - pred.min()
         stack.append(pred)
-        fig,ax=plt.subplots()
-        ax.imshow(pred,cmap='gray')
-        plt.show()
         
     stack = np.array(stack)
-    pipe = PipelineLocalize(stack)
-    spots = pipe.localize(threshold=0.2,plot_spots=False,fit=True)
-    fig,ax=plt.subplots()
-    ax.imshow(pred,cmap='gray')
-    #ax.scatter(4*theta[1,:],4*theta[0,:],marker='x',color='red',s=10)
-    ax.scatter(spots['y_lsq'],spots['x_lsq'],
-               marker='x',color='blue',s=10)
+    stack_avg = np.mean(stack,axis=0)
+    stack_var = np.var(stack,axis=0)
+    
+    fig,ax=plt.subplots(1,3)
+    rgb = np.zeros((80,80,3))
+    stack_var = stack_var/stack_var.max()
+    stack_var = gaussian(stack_var,sigma=1.0)
+    Z = Z[0,0]; Z = Z/Z.max()
+    
+    rgb[:,:,0] = stack_var
+    rgb[:,:,2] = Z
+    ax[0].imshow(stack_avg,cmap='gray')
+    ax[1].imshow(stack_var,cmap='coolwarm')
+    ax[2].imshow(rgb)
+    ax[2].scatter(4*theta[1,:],4*theta[0,:],marker='x',color='lime',s=5)
     plt.show()
-    print(spots[['x_lsq','y_lsq','sigma','N0','conv']])
+
+    #pipe = PipelineLocalize(stack)
+    #spots = pipe.localize(threshold=0.2,plot_spots=True,fit=True)
+        
+    
+
 
 
 

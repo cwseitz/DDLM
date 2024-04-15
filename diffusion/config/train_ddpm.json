@@ -9,13 +9,13 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": null
+        "resume_state": "experiments/ddpm_240413_134142/checkpoint/I910000_E1820"
     },
     "datasets": {
         "train": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/high_snr",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -27,7 +27,7 @@
         "val": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/high_snr",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -57,13 +57,13 @@
         "beta_schedule": {
             "train": {
                 "schedule": "linear",
-                "n_timestep": 10,
+                "n_timestep": 100,
                 "linear_start": 1e-6,
                 "linear_end": 1e-2
             },
             "val": {
                 "schedule": "linear",
-                "n_timestep": 10,
+                "n_timestep": 100,
                 "linear_start": 1e-6,
                 "linear_end": 1e-2
             }

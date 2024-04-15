@@ -23,6 +23,26 @@ class Generator:
     def __init__(self,nx,ny):
         self.nx = nx
         self.ny = ny
+    def show(self,theta,adu,noise,muS,S):
+        fig,ax=plt.subplots(1,5,figsize=(10,4))
+        ax[0].scatter(theta[1,:],theta[0,:],color='black',s=5,marker='o')
+        ax[1].imshow(adu,cmap='gray')
+        ax[2].imshow(noise,cmap='gray')
+        ax[3].imshow(muS,cmap='gray')
+        ax[4].imshow(S,cmap='gray')
+        ax[0].set_xticks([]); ax[0].set_yticks([])
+        ax[1].set_xticks([]); ax[1].set_yticks([])
+        ax[2].set_xticks([]); ax[2].set_yticks([])
+        ax[3].set_xticks([]); ax[3].set_yticks([])
+        ax[4].set_xticks([]); ax[4].set_yticks([])
+        ax[0].set_xlim([0,adu.shape[0]])
+        ax[0].set_ylim([0,adu.shape[1]])
+        ax[0].set_aspect(1.0)
+        ax[0].invert_yaxis()
+        plt.savefig('/home/cwseitz/Desktop/Generation.png',dpi=300)
+        plt.show()
+
+        
     def sample_frames(self,theta,nframes,texp,eta,N0,B0,gain,offset,var,show=False):
         _adu = []; _spikes = []
         for n in range(nframes):
@@ -33,14 +53,14 @@ class Generator:
                 B = self.shot_noise(muB)
             else:
                 B = 0
-            adu = gain*(S+B) + self.read_noise(offset=offset,var=var)
+            read_noise = self.read_noise(offset=offset,var=var)
+            adu = gain*(S+B) + read_noise
             adu = np.clip(adu,0,None)
             adu = np.squeeze(adu)
-            if show:
-                plt.imshow(adu,cmap='gray')
-                plt.show()
             spikes = self.spikes(theta)
             _adu.append(adu); _spikes.append(spikes)
+            #self.show(theta,adu,read_noise,muS,S)
+            
         adu = np.squeeze(np.array(_adu))
         spikes = np.squeeze(np.array(_spikes))
         return adu,spikes
