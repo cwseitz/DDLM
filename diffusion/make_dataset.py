@@ -12,7 +12,7 @@ os.makedirs(savepath+'spikes',exist_ok=True)
 nx = ny = 20
 radius = 7.0
 nspots = 10
-nsamples = 1000
+nsamples = 10000
 args = [radius,nspots]
 
 kwargs = {

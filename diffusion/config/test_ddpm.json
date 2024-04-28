@@ -15,8 +15,8 @@
           "thresh_cnn": 30, 
           "radius": 3, 
           "pixel_size_lateral": 108.3,
-          "modelpath": "experiments/encoder/high_snr/models/encoder/",
-          "modelname": "0413_125847"
+          "modelpath": "experiments/encoder/low_snr/models/encoder/",
+          "modelname": "0417_120223"
           },
     "datasets": {
         "train": {

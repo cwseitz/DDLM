@@ -283,7 +283,6 @@ class GaussianDiffusion(nn.Module):
 
         noise = default(noise, lambda: torch.randn_like(x_start))
         x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
-
         if not self.conditional:
             x_recon = self.denoise_fn(x_noisy, t)
         else:

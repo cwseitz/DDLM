@@ -18,44 +18,32 @@ from model.deep_storm import NeuralEstimator2D
 from BaseSMLM.utils import BasicKDE
 from psf import PipelineLocalize
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', type=str, default='',
-                        help='JSON file for configuration')
-    parser.add_argument('-p', '--phase', type=str, choices=['val'], help='val(generation)', default='val')
-    parser.add_argument('-gpu', '--gpu_ids', type=str, default=None)
-    parser.add_argument('-debug', '-d', action='store_true')
-    parser.add_argument('-enable_wandb', action='store_true')
-    parser.add_argument('-log_infer', action='store_true')
-    
-    args = parser.parse_args()
-    opt = Logger.parse(args)
-    opt = Logger.dict_to_nonedict(opt)
-    diffusion = Model.create_model(opt)
-    encoder = NeuralEstimator2D(opt['deep_storm'])
 
-    diffusion.set_new_noise_schedule(
-        opt['model']['beta_schedule']['val'], schedule_phase='val')
+parser = argparse.ArgumentParser()
+parser.add_argument('-c', '--config', type=str, default='',
+                    help='JSON file for configuration')
+parser.add_argument('-p', '--phase', type=str, choices=['val'], help='val(generation)', default='val')
+parser.add_argument('-gpu', '--gpu_ids', type=str, default=None)
+parser.add_argument('-debug', '-d', action='store_true')
+parser.add_argument('-enable_wandb', action='store_true')
+parser.add_argument('-log_infer', action='store_true')
 
-    nx = ny = 20
-    radius = 7.0
-    nspots = 10
-    nsamples = 10
+args = parser.parse_args()
+opt = Logger.parse(args)
+opt = Logger.dict_to_nonedict(opt)
+diffusion = Model.create_model(opt)
+encoder = NeuralEstimator2D(opt['deep_storm'])
+
+diffusion.set_new_noise_schedule(
+    opt['model']['beta_schedule']['val'], schedule_phase='val')
     
-    disc2D = Disc2D(nx,ny)
-    X,_,theta = disc2D.forward(radius,nspots,N0=1000,show=False)
-    X = X[np.newaxis,np.newaxis,:,:]
-    _,Z = encoder.forward(X)
-    Z = Z[np.newaxis,np.newaxis,:,:]
-    kde = BasicKDE(theta[:2,:].T)
-    S = kde.forward(nx,sigma=1.5,upsample=4)
-        
+def ddpm(X,Z,nsamples=10):
     data_dict = {}
     data_dict['HR'] = torch.from_numpy(Z)
     data_dict['SR'] = torch.from_numpy(Z)
     data_dict['LR'] = torch.from_numpy(X)
     data_dict['Index'] = torch.from_numpy(np.array([0]))
-    
+
     stack = []
     for n in range(nsamples):
         diffusion.feed_data(data_dict)
@@ -66,26 +54,95 @@ if __name__ == "__main__":
         
     stack = np.array(stack)
     stack_avg = np.mean(stack,axis=0)
-    stack_var = np.var(stack,axis=0)
-    
-    fig,ax=plt.subplots(1,3)
-    rgb = np.zeros((80,80,3))
-    stack_var = stack_var/stack_var.max()
-    stack_var = gaussian(stack_var,sigma=1.0)
-    Z = Z[0,0]; Z = Z/Z.max()
-    
-    rgb[:,:,0] = stack_var
-    rgb[:,:,2] = Z
-    ax[0].imshow(stack_avg,cmap='gray')
-    ax[1].imshow(stack_var,cmap='coolwarm')
-    ax[2].imshow(rgb)
-    ax[2].scatter(4*theta[1,:],4*theta[0,:],marker='x',color='lime',s=5)
-    plt.show()
+    stack_var = np.var(stack,axis=0)  
+    return stack_avg,stack_var
 
-    #pipe = PipelineLocalize(stack)
-    #spots = pipe.localize(threshold=0.2,plot_spots=True,fit=True)
-        
+disc2D = Disc2D(20,20)
+
+X1,_,theta1 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
+X1 = X1[np.newaxis,np.newaxis,:,:]
+_,Z1 = encoder.forward(X1)
+plt.imshow(Z1)
+plt.show()
+Z1 = Z1/Z1.max()
+Z1 = Z1[np.newaxis,np.newaxis,:,:]
+kde1 = BasicKDE(theta1[:2,:].T)
+S1 = kde1.forward(20,sigma=1.5,upsample=4)
+S1 = S1/S1.max()
+S1 = S1[np.newaxis,np.newaxis,:,:]
+stack_avg1,stack_var1 = ddpm(X1,S1)
+
+#X2,_,theta2 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
+#X2 = X2[np.newaxis,np.newaxis,:,:]
+#_,Z2 = encoder.forward(X2)
+#Z2 = Z2/Z2.max()
+#Z2 = Z2[np.newaxis,np.newaxis,:,:]
+#kde2 = BasicKDE(theta2[:2,:].T)
+#S2 = kde2.forward(20,sigma=1.5,upsample=4)
+stack_avg2,stack_var2 = ddpm(X1,Z1)
+
+X3,_,theta3 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
+X3 = X3[np.newaxis,np.newaxis,:,:]
+_,Z3 = encoder.forward(X3)
+Z3 = Z3/Z3.max()
+Z3 = Z3[np.newaxis,np.newaxis,:,:]
+kde3 = BasicKDE(theta3[:2,:].T)
+S3 = kde3.forward(20,sigma=1.5,upsample=4)
+S3 = S3/S3.max()
+S3 = S3[np.newaxis,np.newaxis,:,:]
+stack_avg3,stack_var3 = ddpm(X3,S3)
+
+#X4,_,theta4 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
+#X4 = X4[np.newaxis,np.newaxis,:,:]
+#_,Z4 = encoder.forward(X4)
+#Z4 = Z4/Z4.max()
+#Z4 = Z4[np.newaxis,np.newaxis,:,:]
+#kde4 = BasicKDE(theta4[:2,:].T)
+#S4 = kde4.forward(20,sigma=1.5,upsample=4)
+stack_avg4,stack_var4 = ddpm(X3,Z3)
+
+fig,ax=plt.subplots(4,3,figsize=(5,7))
+
+stack_var1 = gaussian(stack_var1,sigma=1.0)
+stack_var2 = gaussian(stack_var2,sigma=1.0)
+stack_var3 = gaussian(stack_var3,sigma=1.0)
+stack_var4 = gaussian(stack_var4,sigma=1.0)
+
+bins = np.linspace(0.001,0.03,100)
+vals1,bins1 = np.histogram(np.sqrt(stack_var1).flatten(),
+                           bins=bins,density=True)
+vals2,bins2 = np.histogram(np.sqrt(stack_var2).flatten(),
+                           bins=bins,density=True)
+vals3,bins3 = np.histogram(np.sqrt(stack_var3).flatten(),
+                           bins=bins,density=True)
+
+ax[0,0].imshow(X1[0,0],cmap='gray')
+ax[1,0].imshow(X1[0,0],cmap='gray')
+ax[2,0].imshow(X3[0,0],cmap='gray')
+ax[3,0].imshow(X3[0,0],cmap='gray')
+
+ax[0,1].imshow(S1[0,0],cmap='gray')
+ax[1,1].imshow(Z1[0,0],cmap='gray')
+ax[2,1].imshow(S3[0,0],cmap='gray')
+ax[3,1].imshow(Z3[0,0],cmap='gray')
+
+im = ax[0,2].imshow(np.sqrt(stack_var1),cmap='coolwarm')
+ax[1,2].imshow(np.sqrt(stack_var2),cmap='coolwarm')
+ax[2,2].imshow(np.sqrt(stack_var3),cmap='coolwarm')
+ax[3,2].imshow(np.sqrt(stack_var4),cmap='coolwarm')
+plt.colorbar(im, ax=ax[0,2], location='top')
+
+for axi in ax.ravel():
+    axi.set_xticks([])
+    axi.set_yticks([])
     
+plt.subplots_adjust(hspace=0.05,wspace=0.05)
+plt.tight_layout()
+plt.savefig('/home/cwseitz/Desktop/Bayes.png',dpi=300)
+plt.show()
+
+
+
 
 
 

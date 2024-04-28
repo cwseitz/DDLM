@@ -71,8 +71,5 @@ class LocalizationCNN(nn.Module):
         # 1x1 conv and hardtanh for final result
         out = self.layer10(out)
         out = self.pred(out)
-        #fig,ax=plt.subplots(1,2)
-        #ax[0].imshow(im[0,0].cpu().detach().numpy())
-        #ax[1].imshow(out[0,0].cpu().detach().numpy())
-        #plt.show()
+
         return out

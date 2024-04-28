@@ -6,7 +6,7 @@ from encode.localize import NeuralEstimator2D
 from skimage.io import imread, imsave
 from glob import glob
 
-savepath = 'dataset/high_snr/'
+savepath = 'dataset/low_snr/'
 prefix = 'Diffusion'
 
 os.makedirs(savepath+'sr_20_80',exist_ok=True)
@@ -17,8 +17,8 @@ config = {
 'thresh_cnn': 30, 
 'radius': 3, 
 'pixel_size_lateral': 108.3,
-'modelpath': 'experiments/encoder/high_snr/models/encoder/',
-'modelname': '0413_125847'
+'modelpath': 'experiments/encoder/low_snr/models/encoder/',
+'modelname': '0417_120223'
 }
 
 for n,lr in enumerate(lrs):

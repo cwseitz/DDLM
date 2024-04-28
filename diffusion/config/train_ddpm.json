@@ -8,8 +8,8 @@
         "log": "logs",
         "tb_logger": "tb_logger",
         "results": "results",
-        "checkpoint": "checkpoint",
-        "resume_state": "experiments/ddpm_240413_134142/checkpoint/I910000_E1820"
+        "checkpoint": "checkpoint"
+        //"resume_state": "null"
     },
     "datasets": {
         "train": {
