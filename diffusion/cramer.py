@@ -14,7 +14,7 @@ from tensorboardX import SummaryWriter
 from skimage.io import imsave
 from dataset import Dataset
 from generators import *
-from model.deep_storm import NeuralEstimator2D
+from encode.localize import NeuralEstimator2D
 from BaseSMLM.utils import BasicKDE
 from utils.errors import errors2d
 

@@ -14,7 +14,7 @@ from skimage.io import imsave
 from skimage.filters import gaussian
 from dataset import Dataset
 from generators import *
-from model.deep_storm import NeuralEstimator2D
+from encode.localize import NeuralEstimator2D
 from BaseSMLM.utils import BasicKDE
 from psf import PipelineLocalize
 
