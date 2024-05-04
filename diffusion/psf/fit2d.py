@@ -6,7 +6,7 @@ import json
 import time
 from pathlib import Path
 from .log2d import LoGDetector
-from .opt2d import LSQ_BFGS
+from .lsq2d import LSQ_BFGS
 from psf.psf2d import *
 from numpy.linalg import inv
              
