@@ -24,17 +24,13 @@ class Generator:
         self.nx = nx
         self.ny = ny
     def show(self,theta,adu,noise,muS,S):
-        fig,ax=plt.subplots(1,5,figsize=(10,4))
+        fig,ax=plt.subplots(1,3,figsize=(10,4))
         ax[0].scatter(theta[1,:],theta[0,:],color='black',s=5,marker='o')
-        ax[1].imshow(adu,cmap='gray')
-        ax[2].imshow(noise,cmap='gray')
-        ax[3].imshow(muS,cmap='gray')
-        ax[4].imshow(S,cmap='gray')
+        ax[1].imshow(muS,cmap='gray')
+        ax[2].imshow(adu,cmap='gray')
         ax[0].set_xticks([]); ax[0].set_yticks([])
         ax[1].set_xticks([]); ax[1].set_yticks([])
         ax[2].set_xticks([]); ax[2].set_yticks([])
-        ax[3].set_xticks([]); ax[3].set_yticks([])
-        ax[4].set_xticks([]); ax[4].set_yticks([])
         ax[0].set_xlim([0,adu.shape[0]])
         ax[0].set_ylim([0,adu.shape[1]])
         ax[0].set_aspect(1.0)
