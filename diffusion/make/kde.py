@@ -26,7 +26,7 @@ class BasicKDE:
 class DistKDE:
     def __init__(self,theta):
         self.theta = theta
-    def forward(self,npixels,upsample=10,sigma=1.0,xyvar=1.0,xylim=4.0):
+    def forward(self,npixels,upsample=10,sigma=1.0,xyvar=1.0,xylim=4.0,nsamples=1000):
         patchw = int(round(5*sigma))
         theta = upsample*(self.theta)
         kde = np.zeros((upsample*npixels,upsample*npixels),dtype=np.float32)
@@ -38,19 +38,15 @@ class DistKDE:
             x0,y0 = theta[n,:]
             patchx, patchy = int(round(x0))-patchw, int(round(y0))-patchw
             x0p = x0-patchx; y0p = y0-patchy
-            x0p_vec = np.linspace(x0p-xylim,x0p+xylim,20)
-            y0p_vec = np.linspace(y0p-xylim,y0p+xylim,20)
-            lams = []; plams = []
-            for this_x0p in x0p_vec:
-                for this_y0p in y0p_vec:
-                    lam = lamx(X,this_x0p,sigma)*lamy(Y,this_y0p,sigma)
-                    lams.append(lam)
-                    r = [this_x0p,this_y0p]
-                    plam = multivariate_normal.pdf(r,mean=mu,cov=cov)
-                    plams.append(plam)
-            lams = np.array(lams); plams = np.array(plams)
-            avg = np.average(lams,axis=0,weights=plams)
-            var = np.average((lams-avg)**2,axis=0,weights=plams)
+            lams = []
+            norm = multivariate_normal(mu,cov)
+            for m in range(nsamples):
+                this_x0p,this_y0p = norm.rvs()
+                lam = lamx(X,this_x0p,sigma)*lamy(Y,this_y0p,sigma)
+                lams.append(lam)
+            lams = np.array(lams);
+            avg = np.average(lams,axis=0)
+            var = np.var(lams,axis=0)
             kde_xmin = patchx; kde_xmax = patchx+2*patchw
             kde_ymin = patchy; kde_ymax = patchy+2*patchw
             kde[kde_xmin:kde_xmax,kde_ymin:kde_ymax] += var

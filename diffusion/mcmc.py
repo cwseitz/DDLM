@@ -9,7 +9,10 @@ X,_,theta = disc2D.forward(0.0,1,sigma=0.92,N0=200)
 
 kde = DistKDE(theta[:2,:].T)
 S = kde.forward(20,sigma=1.5,upsample=4,xyvar=1.0)
+plt.imshow(S)
+plt.show()
 
+"""
 mle2d_mcmc = MLE2D_MCMC(theta,X)
 theta = np.squeeze(np.delete(theta,2,axis=0))
 samples = mle2d_mcmc.metropolis(theta,iters=10000,beta=0.2,
@@ -47,4 +50,5 @@ plt.colorbar(im,ax=ax[2],fraction=0.046,
 plt.tight_layout()
 plt.savefig('/home/cwseitz/Desktop/MCMC.png',dpi=300)
 plt.show()
+"""
 

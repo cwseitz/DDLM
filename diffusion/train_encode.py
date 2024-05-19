@@ -24,8 +24,6 @@ logger = train_config.get_logger('train')
 batch_size = 4
 dataloader = SMLMDataLoader(train_config['data_loader']['path'],batch_size,validation_split=0.1,shuffle=False)
 valid_data_loader = dataloader.split_validation()
-print(f'Found {len(dataloader)} train and {len(valid_data_loader)} validation batches')
-
 model = train_config.init_obj('arch', module_arch)
 logger.info(model)
 
