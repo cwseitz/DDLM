@@ -8,14 +8,13 @@ import core.logger as Logger
 import core.metrics as Metrics
 import matplotlib.pyplot as plt
 import os
+from make.kde import BasicKDE
 from skimage.feature import blob_log
 from core.wandb_logger import WandbLogger
-from tensorboardX import SummaryWriter
 from skimage.io import imsave
 from dataset import Dataset
 from generators import *
 from encode.localize import NeuralEstimator2D
-from BaseSMLM.utils import BasicKDE
 from utils.errors import errors2d
 
 parser = argparse.ArgumentParser()
@@ -68,13 +67,12 @@ all_fp = []; all_fn = []
 for n in range(niters):
     X,_,theta = gen.forward(7.0,nspots,N0=200,show=False)
     X = X[np.newaxis,np.newaxis,:,:]
-    _,Z = encoder.forward(X)
+    Z = encoder.forward(X)
     Z = Z[np.newaxis,np.newaxis,:,:]
     kde = BasicKDE(theta[:2,:].T)
     S = kde.forward(20,sigma=1.5,upsample=4)
     coords = blob_log(Z[0,0],min_sigma=2,max_sigma=3,
                       num_sigma=5,threshold=0.2,exclude_border=5)
-    #stack_avg,stack_var = ddpm(X,Z)
     
     coords = coords[:,:2]
     xerr,yerr,inter,union,fp,fn = errors2d(4*theta[:2,:].T,coords)

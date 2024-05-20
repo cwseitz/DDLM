@@ -12,7 +12,6 @@ S = kde.forward(20,sigma=1.5,upsample=4,xyvar=1.0)
 plt.imshow(S)
 plt.show()
 
-"""
 mle2d_mcmc = MLE2D_MCMC(theta,X)
 theta = np.squeeze(np.delete(theta,2,axis=0))
 samples = mle2d_mcmc.metropolis(theta,iters=10000,beta=0.2,
@@ -46,9 +45,7 @@ ax[2].set_xlabel(r'$u$'); ax[2].set_ylabel(r'$v$')
 formatter = LogFormatter(10, labelOnlyBase=True) 
 plt.colorbar(im,ax=ax[2],fraction=0.046, 
              pad=0.04, format=formatter, label=r'$\sqrt{Var(y)}$')
-
 plt.tight_layout()
-plt.savefig('/home/cwseitz/Desktop/MCMC.png',dpi=300)
 plt.show()
-"""
+
 

@@ -10,13 +10,11 @@ import matplotlib.pyplot as plt
 import os
 from make.kde import BasicKDE
 from core.wandb_logger import WandbLogger
-from tensorboardX import SummaryWriter
 from skimage.io import imsave
 from skimage.filters import gaussian
 from dataset import Dataset
 from generators import *
 from encode.localize import NeuralEstimator2D
-from psf import PipelineLocalize
 from matplotlib.ticker import LogFormatter 
 
 
@@ -65,7 +63,7 @@ nsamples = 100
 
 X1,_,theta1 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
 X1 = X1[np.newaxis,np.newaxis,:,:]
-_,Z1 = encoder.forward(X1)
+Z1 = encoder.forward(X1)
 Z1 = Z1/Z1.max()
 Z1 = Z1[np.newaxis,np.newaxis,:,:]
 kde1 = BasicKDE(theta1[:2,:].T)
@@ -75,7 +73,7 @@ S1 = S1[np.newaxis,np.newaxis,:,:]
 
 X2,_,theta2 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
 X2 = X2[np.newaxis,np.newaxis,:,:]
-_,Z2 = encoder.forward(X2)
+Z2 = encoder.forward(X2)
 Z2 = Z2/Z2.max()
 Z2 = Z2[np.newaxis,np.newaxis,:,:]
 kde2 = BasicKDE(theta2[:2,:].T)
@@ -85,7 +83,7 @@ S2 = S2[np.newaxis,np.newaxis,:,:]
 
 X3,_,theta3 = disc2D.forward(7.0,10,sigma=0.92,N0=200,show=False)
 X3 = X3[np.newaxis,np.newaxis,:,:]
-_,Z3 = encoder.forward(X3)
+Z3 = encoder.forward(X3)
 Z3 = Z3/Z3.max()
 Z3 = Z3[np.newaxis,np.newaxis,:,:]
 kde3 = BasicKDE(theta3[:2,:].T)
@@ -93,21 +91,11 @@ S3 = kde3.forward(20,sigma=1.5,upsample=4)
 S3 = S3/S3.max()
 S3 = S3[np.newaxis,np.newaxis,:,:]
 
-#fig,ax=plt.subplots()
-#ax.imshow(S1[0,0],cmap='gray')
-#ax.set_xticks([]); ax.set_yticks([])
-#plt.savefig('/home/cwseitz/Desktop/KDE.png',dpi=300)
-#plt.show()
-
 stack_avg1,stack_var1 = ddpm(X1,S1,nsamples=nsamples)
 stack_avg2,stack_var2 = ddpm(X2,S2,nsamples=nsamples)
 stack_avg3,stack_var3 = ddpm(X3,S3,nsamples=nsamples)
 
 fig,ax=plt.subplots(3,3,figsize=(5,5))
-
-#stack_var1 = gaussian(stack_var1,sigma=0.5)
-#stack_var2 = gaussian(stack_var2,sigma=0.5)
-#stack_var3 = gaussian(stack_var3,sigma=0.5)
 
 ax[0,0].imshow(X1[0,0],cmap='gray')
 ax[0,0].set_xticks([0,10]); ax[0,0].set_yticks([0,10])
@@ -115,7 +103,6 @@ ax[1,0].imshow(X2[0,0],cmap='gray')
 ax[1,0].set_xticks([0,10]); ax[1,0].set_yticks([0,10])
 ax[2,0].imshow(X3[0,0],cmap='gray')
 ax[2,0].set_xticks([0,10]); ax[2,0].set_yticks([0,10])
-
 
 ax[0,1].imshow(S1[0,0],cmap='gray')
 ax[0,1].set_xticks([0,40]); ax[0,1].set_yticks([0,40])
@@ -126,16 +113,15 @@ ax[2,1].set_xticks([0,40]); ax[2,1].set_yticks([0,40])
 
 
 vmin = 0.0
-#vmax = 0.025
-vmax = 1.0
-im = ax[0,2].imshow(stack_avg1,cmap='plasma',
+vmax = 0.025
+im = ax[0,2].imshow(np.sqrt(stack_var1),cmap='plasma',
                     vmin=vmin,vmax=vmax)
 formatter = LogFormatter(10, labelOnlyBase=True) 
 plt.colorbar(im,ax=ax[0,2],fraction=0.046,pad=0.04,label=r'$\sqrt{Var(y_k)}$',format=formatter)
 
-ax[1,2].imshow(stack_avg2,cmap='plasma',
+ax[1,2].imshow(np.sqrt(stack_var2),cmap='plasma',
                     vmin=vmin,vmax=vmax)
-ax[2,2].imshow(stack_avg3,cmap='plasma',
+ax[2,2].imshow(np.sqrt(stack_var3),cmap='plasma',
                     vmin=vmin,vmax=vmax)
 
 ax[0,2].set_xticks([0,40]); ax[0,2].set_yticks([0,40])
@@ -144,13 +130,5 @@ ax[2,2].set_xticks([0,40]); ax[2,2].set_yticks([0,40])
 
 plt.subplots_adjust(hspace=0.0,wspace=0.37)
 plt.tight_layout()
-plt.savefig('/home/cwseitz/Desktop/Bayes.png',dpi=300)
 plt.show()
-
-
-
-
-
-
-
 

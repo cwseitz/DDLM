@@ -15,7 +15,7 @@
         "train": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/high_snr",
+            "dataroot": "dataset/diffusion",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -27,7 +27,7 @@
         "val": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/high_snr",
+            "dataroot": "dataset/diffusion",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -35,7 +35,7 @@
         }
     },
     "model": {
-        "which_model_G": "ddpm", //ddpm, sr3
+        "which_model_G": "ddpm",
         "finetune_norm": false,
         "unet": {
             "in_channel": 2,
