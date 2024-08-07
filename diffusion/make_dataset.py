@@ -15,14 +15,14 @@ nsamples = 1000
 args = [radius,nspots]
 
 kwargs = {
-'N0':200,
-'B0':0,
+'N0':1000,
+'B0':50,
 'eta':1.0,
 'sigma':0.92,
 "gain": 1.0,
 "offset": 100.0,
 "var": 5.0,
-"show": True
+"show": False
 }
 
 generator = Disc2D(nx,ny)

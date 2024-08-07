@@ -22,7 +22,7 @@
         "train": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "dataroot": "/home/cwseitz/git/DDLM/diffusion/dataset/diffusion",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,
@@ -34,7 +34,7 @@
         "val": {
             "name": "Diffusion",
             "mode": "HR",
-            "dataroot": "/home/cwseitz/git/diffusion/diffusion/dataset/diffusion",
+            "dataroot": "/home/cwseitz/git/DDLM/diffusion/dataset/diffusion",
             "datatype": "img",
             "l_resolution": 20,
             "r_resolution": 80,

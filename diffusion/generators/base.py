@@ -55,7 +55,8 @@ class Generator:
             adu = np.squeeze(adu)
             spikes = self.spikes(theta)
             _adu.append(adu); _spikes.append(spikes)
-            #self.show(theta,adu,read_noise,muS,S)
+            if show:
+                self.show(theta,adu,read_noise,muS,S)
             
         adu = np.squeeze(np.array(_adu))
         spikes = np.squeeze(np.array(_spikes))
