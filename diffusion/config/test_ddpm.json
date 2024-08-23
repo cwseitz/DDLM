@@ -2,21 +2,21 @@
     "name": "ddpm",
     "phase": "train",
     "gpu_ids": [
-        0,1
+        0
     ],
     "path": {
         "log": "logs",
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": "experiments/ddpm_240414_215430/checkpoint/I1000000_E2000"
+        "resume_state": "experiments/ddpm/checkpoint/I1000000_E2000"
     },
     "deep_storm": {
           "thresh_cnn": 30, 
           "radius": 3, 
           "pixel_size_lateral": 108.3,
-          "modelpath": "experiments/encoder/models/encoder/",
-          "modelname": "0417_120223"
+          "modelpath": "experiments/encoder/models/encoder/60x/100pix/",
+          "modelname": "0821_133904"
           },
     "datasets": {
         "train": {

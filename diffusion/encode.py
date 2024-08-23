@@ -15,7 +15,7 @@ nsamples = len(lrs)
 
 config = {
 'modelpath': 'experiments/encoder/models/encoder/',
-'modelname': '0807_175819'
+'modelname': '0817_214528'
 }
 
 for n,lr in enumerate(lrs):
