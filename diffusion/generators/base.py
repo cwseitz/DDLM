@@ -69,6 +69,9 @@ class Generator:
         i0 = eta*N0*texp
         for n in range(nspots):
             x0,y0,sigma,N0 = theta[:,n]
+            #N0 = np.clip(np.random.normal(250.0,100.0),20.0,None)
+            N0 = np.random.uniform(50.0,1000.0)
+            i0 = eta*N0*texp
             patchx, patchy = int(round(x0))-patch_hw, int(round(y0))-patch_hw
             x0p = x0-patchx; y0p = y0-patchy
             this_mu = i0*lamx(X,x0p,sigma)*lamy(Y,y0p,sigma)
